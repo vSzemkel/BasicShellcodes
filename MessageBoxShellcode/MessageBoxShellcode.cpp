@@ -57,7 +57,6 @@ byte* rva2va(HMODULE module, DWORD rva)
 FARPROC get_proc_address_by_hash(HMODULE module, DWORD hash)
 {
 	auto export_dir = get_pe_directory32(module, 0 /* ExportTable */);
-	auto fun_count = export_dir->Size;
 	auto export_tables_struct = reinterpret_cast<EXPORT_DIRECTORY*>(rva2va(module, export_dir->VirtualAddress));
 	auto names = reinterpret_cast<DWORD*>(rva2va(module, export_tables_struct->AddressOfNames));
 	int number_of_names = export_tables_struct->NumberOfNames;
