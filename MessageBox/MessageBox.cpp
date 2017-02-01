@@ -22,7 +22,7 @@ void execute_shellcode()
 void save_shellcode_for_checking()
 {
 	OFSTRUCT of{ sizeof(OFSTRUCT) };
-	auto fh = (HANDLE)OpenFile("..\\IDA\\shellcode.bin", &of, OF_WRITE|OF_CREATE);
+	auto fh = (HANDLE)OpenFile("..\\IDA\\messagebox.bin", &of, OF_WRITE|OF_CREATE);
 	WriteFile(fh, g_Shellcode, sizeof(g_Shellcode), NULL, NULL);
 	CloseHandle(fh);
 }
