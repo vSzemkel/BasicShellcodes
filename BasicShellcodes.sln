@@ -5,6 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IDA", "IDA", "{289AB3FC-3573-4E65-AC62-DD787C5430E3}"
 	ProjectSection(SolutionItems) = preProject
+		IDA\downloadexec.idb = IDA\downloadexec.idb
 		IDA\messagebox.idb = IDA\messagebox.idb
 	EndProjectSection
 EndProject

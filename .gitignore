@@ -4,6 +4,7 @@
 
 Debug/
 
+*.bin
 *.db
 *.opendb
 *.suo
