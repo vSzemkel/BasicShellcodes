@@ -24,6 +24,9 @@
     <ClInclude Include="pe_export_dir.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ldr_module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pe_hdrs_helper.cpp">

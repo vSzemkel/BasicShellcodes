@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ldr_module.h" />
     <ClInclude Include="pe_export_dir.h" />
     <ClInclude Include="pe_hdrs_helper.h" />
     <ClInclude Include="targetver.h" />
