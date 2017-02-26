@@ -7,7 +7,7 @@
 
 int main()
 {
-    ShellcodeUtils::SaveShellcodeForChecking("messagebox");
+    ShellcodeUtils::SaveShellcodeForChecking("downloadexec");
 
     ShellcodeUtils::PrintModuleFunctionNameForHash("urlmon.dll", 0x702F1A36);
     ShellcodeUtils::PrintModuleFunctionNameForHash("kernel32.dll", 0x0E8AFE98);
